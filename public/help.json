@@ -1,0 +1,40 @@
+{
+  "title": "Welcome to Noad",
+  "about": "Noad is a node-based brainstorming canvas. Jot ideas down as Nodes, connect related ideas with Synapses, and drop in traced images — then pan, zoom, and freely rearrange everything on an infinite canvas.",
+  "sections": [
+    {
+      "heading": "Nodes",
+      "body": "A Node is a resizable sticky note with a title and body text. Pick the Node tool and click (or click-drag) on the canvas to place one, then double-click it to start typing. Drag its edges or corners to resize it, and drag its body to move it."
+    },
+    {
+      "heading": "Synapses",
+      "body": "A Synapse is a connection between two Nodes. Pick the Synapse tool (or just drag from a Node's blue port) and drop it on another Node's port to link them. Double-click a synapse to add a bend point, and drag its arrowheads or bends to reshape the path."
+    },
+    {
+      "heading": "Images",
+      "body": "Use the Image button on the toolbar to import an image and convert it to an SVG image, then drop it onto the canvas like any other element."
+    },
+    {
+      "heading": "Properties & Styling",
+      "body": "Select a Node, Synapse, or Image to edit its properties in the panel on the right. Use the top and left panels to change canvas-wide defaults — colors, fonts, borders, and more."
+    }
+  ],
+  "shortcuts": [
+    { "keys": "S", "description": "Switch to the Select tool" },
+    { "keys": "N", "description": "Switch to the Node tool" },
+    { "keys": "X", "description": "Switch to the Synapse tool" },
+    { "keys": "Delete / Backspace", "description": "Delete the current selection" },
+    { "keys": "Ctrl/Cmd + Z", "description": "Undo" },
+    { "keys": "Ctrl/Cmd + C", "description": "Copy the current selection" },
+    { "keys": "Ctrl/Cmd + V / P", "description": "Paste at the cursor's position" },
+    { "keys": "Ctrl/Cmd + S", "description": "Open the Save dialog" },
+    { "keys": "Ctrl/Cmd + B", "description": "Toggle bold while editing text" },
+    { "keys": "Ctrl/Cmd + I", "description": "Toggle italic while editing text" },
+    { "keys": "Arrow keys", "description": "Nudge the selection, or pan the canvas if nothing is selected" },
+    { "keys": "Shift + Arrow keys", "description": "Jump the selection (or pan faster) in larger steps" },
+    { "keys": "Ctrl/Cmd + click", "description": "Add or remove a Node/Image from the selection" },
+    { "keys": "Scroll wheel", "description": "Zoom the canvas, or adjust a hovered number field" },
+    { "keys": "Middle-click + drag", "description": "Pan the canvas, or scrub-adjust a hovered number field" },
+    { "keys": "Escape", "description": "Return to the Select tool; press twice to close open panels" }
+  ]
+}
