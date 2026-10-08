@@ -1,0 +1,24 @@
+{
+  "name": "figjam-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3434",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^16.2.7",
+    "potrace": "^2.1.8",
+    "react": "^18",
+    "react-dom": "^18",
+    "sharp": "^0.34.5",
+    "tailwind-scrollbar": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
+  }
+}
