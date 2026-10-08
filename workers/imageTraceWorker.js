@@ -170,6 +170,52 @@ async function traceColor(input, options) {
   return combined;
 }
 
+// Potrace has no concept of alpha — it reads RGB and ignores transparency, so a
+// transparent PNG would otherwise get its "empty" areas traced as whatever RGB
+// happened to be stored under them (often solid black). To keep those areas
+// genuinely transparent in the output vector, trace the source's own alpha
+// channel into its own vector shape and clip the whole result to it, so no
+// mode (bw/gray/color), and no explicit background fill, can paint over what
+// was transparent in the original image.
+async function applyAlphaClip(input, svg, options) {
+  let meta;
+  try {
+    meta = await sharp(input).metadata();
+  } catch {
+    return svg;
+  }
+  if (!meta.hasAlpha) return svg;
+
+  // White = opaque, black = fully transparent — same mask convention used for
+  // the per-color layers in traceColor().
+  const alphaMask = await sharp(input).extractChannel("alpha").png().toBuffer();
+
+  let alphaSvg;
+  try {
+    alphaSvg = await traceAsync(alphaMask, {
+      threshold: 128,
+      blackOnWhite: false, // trace the WHITE (opaque) region, not the black (transparent) one
+      turdSize: options.turdSize,
+      alphaMax: options.alphaMax,
+      optCurve: true,
+    });
+  } catch {
+    return svg; // if the alpha shape can't be traced, fall back to the un-clipped result
+  }
+
+  const pathDs = [...alphaSvg.matchAll(/<path[^>]*\sd="([^"]+)"/g)].map(m => m[1]);
+  if (pathDs.length === 0) return svg; // e.g. a fully opaque or fully transparent source — nothing to clip
+
+  const headerMatch = svg.match(/^[\s\S]*?<svg[^>]*>/);
+  if (!headerMatch) return svg;
+  const header = headerMatch[0];
+  const inner = svg.slice(header.length).replace(/<\/svg>\s*$/, "");
+  // clip-rule must match potrace's own evenodd fill-rule, or holes traced in the
+  // alpha shape (e.g. a ring-shaped sticker) would get filled back in as opaque.
+  const clipPaths = pathDs.map(d => `<path d="${d}" clip-rule="evenodd" />`).join("");
+  return `${header}<defs><clipPath id="alpha-clip">${clipPaths}</clipPath></defs><g clip-path="url(#alpha-clip)">${inner}</g></svg>`;
+}
+
 process.on("uncaughtException", fail);
 
 process.on("message", ({ buffer, mode, options }) => {
@@ -187,6 +233,7 @@ process.on("message", ({ buffer, mode, options }) => {
       } else {
         svg = await traceAsync(input, options);
       }
+      svg = await applyAlphaClip(input, svg, options);
       const { svg: normalized, naturalWidth, naturalHeight } = normalizeSvg(svg);
       process.send({ ok: true, svg: normalized, naturalWidth, naturalHeight });
       process.exit(0);
